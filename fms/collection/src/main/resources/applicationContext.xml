@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd"
+       default-lazy-init="false">
+    <bean id="redisPropertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="locations">
+            <list>
+                <!--<value>file:${FMS_HOME}/server-config.properties</value>-->
+                <!--<value>file:${FMS_HOME}/redis.properties</value>-->
+                <value>classpath:server-config.properties</value>
+                <!-- redis-common模块中引用-->
+                <value>classpath:redis.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="serverConfig" class="com.pekall.fms.collection.ServerConfig">
+        <property name="collectionPort" value="${collection.port}" />
+        <property name="collectionTimeout" value="${collection.timeout}" />
+        <property name="msgSystemHost" value="${redis.host}"/>
+        <property name="msgSystemPort" value="${redis.port}"/>
+    </bean>
+
+    <!-- Enable @Transactional support -->
+    <tx:annotation-driven/>
+
+    <!-- Activates scanning of @Autowired -->
+    <context:annotation-config/>
+
+    <!-- Activates scanning of @Repository -->
+    <context:component-scan base-package="com.pekall.fms.collection"/>
+
+    <bean id="collectionServer"
+          class="com.pekall.fms.collection.CollectionServer"
+          lazy-init="false">
+        <property name="config" ref="serverConfig"/>
+    </bean>
+
+</beans>

@@ -1,0 +1,553 @@
+package pekall.fms.collection.cat021;
+
+option optimize_for = SPEED;
+option java_package = "com.pekall.fms.collection.cat021";
+option java_outer_classname = "Cat021Proto";
+
+message DiDataSourceId
+{
+	optional int32 sac = 1;
+	optional int32 sic = 2;
+}
+
+//040 目标报告描述符的第1个子字段
+message DiTargetReportDescriptorFirstSub
+{
+  //微分修正
+  optional bool hasDcr = 1;
+
+  //接地位设置
+  optional bool hasGbs = 2;
+
+  //目标报告 0:实际目标 1:模拟目标
+  optional int32 sim = 3;
+
+  //目标用途 0:默认目标 1:测试目标
+  optional int32 tst = 4;
+
+  //选定高度 true:能提供选定高度，false:不能提供选定高度
+  optional bool hasSaa = 5;
+
+  //保密等级 0:有效 1:不信任 2:无信息 3:暴露
+  optional int32 cl = 6;
+}
+
+//040 目标报告描述符的第2个子字段
+message DiTargetReportDescriptorSecondSub
+{
+  //NOGO位设置
+  optional bool hasNogo = 1;
+
+  //Compact Position Reporting
+  //false:Validation failed
+  //true:Validation correct
+  optional bool cprValidCorrect = 2;
+
+  //Local Decoding Position Jump
+  //false:LDPJ not detected
+  //true:LDPJ detected
+  optional bool ldpjDetected = 3;
+
+  //Range Check
+  //0:default
+  //1:Range Check failed
+  optional int32 rcf = 4;
+}
+
+message DiTargetReportDescriptor
+{
+	optional int32 atp = 1;
+	optional int32 arc = 2;
+	optional int32 rc = 3;
+	optional int32 rab = 4;
+	optional DiTargetReportDescriptorFirstSub firstSub = 5;
+	optional DiTargetReportDescriptorSecondSub secondSub = 6;
+}
+
+message DiPosition
+{
+	//维度，正表示北纬，反之南纬
+  optional float latitude = 1;
+	//经度，正表示东经，反之西经
+	optional float longitude = 2;
+
+}
+
+message DiHighResolutionPosition
+{
+  //维度，正表示北纬，反之南纬
+  optional float latitude = 1;
+  //经度，正表示东经，反之西经
+  optional float longitude = 2;
+}
+
+message DiTrueAirspeed
+{
+  //速度值
+  optional float value = 1;
+  //是否真实速度,true:value是真实速度 false:大于value值
+  optional bool isTrue = 2;
+}
+message DiGeometricHeight
+{
+  //速度值
+  optional float value = 1;
+  //是否真实高度,true:value是真实速度 false:大于value值
+  optional bool isTrue = 2;
+}
+
+
+//090 (必须的字段)质量指标的第1个子字段
+message DiQualityIndicatorsFirstSub
+{
+  //Navigation Integrity Category for Barometric Altitude
+  optional int32 barometricAltitude = 1;
+
+  //Surveillance Integrity Level
+  optional int32 level = 2;
+
+  //Navigation Accuracy Category for Position
+  optional int32 position = 3;
+}
+
+message DiQualityIndicators
+{
+  //NUCr or NACv
+  optional int32 nucrOrNacv = 1;
+  //NUC p or NIC
+  optional int32 nucpOrNic = 2;
+  optional DiQualityIndicatorsFirstSub firstSub = 3;
+}
+message DiMopsVersion
+{
+  //Version Supported or Not
+  optional bool versionIsSupported = 1;
+  //Version Number
+  optional int32 versionNumber = 2;
+  //Link Technology Type 0:Other 1:UAT 2:1090 ES 3:VDL 4:N/A
+  optional int32 linkTechnologyType = 3;
+}
+
+message DiTargetStatus
+{
+  //Priority Status 0: No emergency / not reported 1:General emergency
+  //2:Lifeguard / medical emergency 3:Minimum fuel
+  //4:No communications 5:Unlawful interference 6:“Downed” Aircraft
+  optional int32 priorityStatus = 1;
+
+  //0:No condition reported 1:Permanent Alert (Emergency condition)
+  //2:Temporary Alert (change in Mode 3/A Code other than emergency)
+  //3:SPI set
+  optional int32 surveillanceStatus = 2;
+}
+
+
+message DiBarometricVerticalRate
+{
+  //速度值
+  optional float value = 1;
+  //是否真实速度,true:value是真实速度 false:大于value值
+  optional bool isTrue = 2;
+}
+
+message DiGeometricVerticalRate
+{
+  //速度值
+  optional float value = 1;
+  //是否真实速度,true:value是真实速度 false:大于value值
+  optional bool isTrue = 2;
+}
+
+
+message DiGroundVector
+{
+  //速度值
+  optional float groundSpeed = 1;
+  //是否真实速度,true:value是真实速度 false:大于value值
+  optional bool groundSpeedIsTrue = 2;
+  //参照“正北”方向的顺时针轨角
+  optional float trackAngle = 3;
+}
+
+message DiTrackAngleRate
+{
+  //速率值
+  optional float value = 1;
+  //是否真实速率,true:value是真实速率 false:大于value值
+  optional bool isTrue = 2;
+}
+
+message DiMetInformation
+{
+  //风速
+  optional float windSpeed = 1;
+  //风向
+  optional int32 windDirection = 2;
+  //温度
+  optional float temperature = 3;
+  //湍流
+  optional int32 turbulence = 4;
+}
+
+message DiIntermediateStateSelectedAltitude
+{
+  //源可用性
+  optional bool sourceAvailability = 1;
+
+  //源 0:Unknown 1:Aircraft Altitude (Holding Altitude) 2:FCU/MCP Selected Altitude
+  //3:FMS Selected Altitude
+  optional int32 source = 2;
+
+  //海拔高度
+  optional float altitude = 3;
+}
+
+
+message DiFinalStateSelectedAltitude
+{
+  //管理垂直模式
+  optional bool manageVerticalModeActive = 1;
+
+  //高度保持模式
+  optional bool altitudeHoldModeActive = 2;
+
+  //方法模式
+  optional bool approachModeActive = 3;
+
+  //海拔高度
+  optional float altitude = 4;
+}
+
+message DiTrajectoryIntentSecondSub
+{
+//TCP number available
+  optional bool tcpNumberAvailable = 1;
+
+  //TCP compliance
+  optional bool tcpCompliance = 2;
+
+  //轨迹变化点数
+  optional int32 tcpNumber = 3;
+
+  //海波高度
+  optional float altitude = 5;
+
+  //维度
+  optional float latitude = 6;
+
+  //经度
+  optional float longitude = 7;
+
+  //点类型 0:Unknown    1:Fly by waypoint (LT)    2:Fly over waypoint (LT)
+  // 3:Hold pattern (LT)    4:Procedure hold (LT)    5:Procedure turn (LT)
+  // 6:RF leg (LT)    7:Top of climb (VT)    8:Top of descent (VT)
+  // 9:Start of level (VT)    10:Cross-over altitude (VT)    11:Transition altitude (VT)
+  optional int32 pointType = 8;
+
+  //td 0:N/A    1:Turn right    2:Turn left    3:No turn
+  optional int32 td = 9;
+
+  //Turn Radius Availabilty
+  optional bool turnRadiusAvailabilty = 10;
+
+  //TOA available
+  optional bool toaAvailable = 11;
+
+  //TOV时间  TOA为ture时才有意义
+  optional int64 tov = 12;
+
+  optional float ttr = 13;
+}
+message DiTrajectoryIntent
+{
+  //NAV available for Subfield #1
+  optional bool navAvailable = 1;
+
+  //NVB available for Subfield #1
+  optional bool nvbAvailable = 2;
+
+  //重复因子
+  optional int32 repetitionFactor = 3;
+
+  //重复点数据
+  repeated DiTrajectoryIntentSecondSub sub = 4;
+}
+
+message DiServiceManagement
+{
+  //上报周期值
+  optional float value = 1;
+  //是否真实上报周期,true:value是真实上报周期 false:大于value值
+  optional bool isTrue = 2;
+}
+
+message DiAircraftOperationalStatus
+{
+  //TCAS 分辨率报告是否激活
+  optional bool tcsResolutionAdvisoryActive = 1;
+
+  //目标变更报告能力
+  optional int32 targetChangeReportCapability = 2;
+
+  //目标状态报告能力
+  optional bool targetStateReportCapability = 3;
+
+  //空气引用速度报告能力
+  optional bool airReferencedVelocityReportCapability = 4;
+
+  //驾驶舱显示交通信息 操作
+  optional bool cockpitDisplayOfTrafficInformationAirborneOperational = 5;
+
+  //TCAS 系统状态
+  optional bool tcsSystemStatusOperational = 6;
+}
+
+message DiSurfaceCapabilitiesAndCharacteristics
+{
+  //是ADS-B传输 位置参考点
+  optional bool positionOffsetAppliedReference = 1;
+
+  //驾驶舱显示交通信息表面 操作
+  optional bool cockpitDisplayOfTrafficInformationSurfaceOperational = 2;
+
+  //B2级的发射功率小于70瓦
+  optional bool classB2TransmitPowerLessThan70Watts = 3;
+
+  //接受空中交通管制服务
+  optional bool receivingAtcServices = 4;
+
+  //设置“意外”开关
+  optional bool settingOfSwitch = 5;
+
+  //飞机的长 宽 Subfield #1
+  optional int32 lengthWidthOfAircraft = 6;
+}
+
+
+message DiModeSmbDataBds
+{
+  optional int64 commbMessageData = 1;
+  optional int32 storeAddress1 = 2;
+  optional int32 storeAddress2 = 3;
+}
+
+message DiModeSmbData
+{
+  //重复因子
+  optional int32 repetitionFactor = 1;
+
+  //重复BDS 消息数据
+  repeated DiModeSmbDataBds bds = 2;
+}
+
+//数据 有效时长
+message DiDataAges {
+  //008 最后接收时长 Subfield #1
+  optional float aos = 1;
+
+  //040 最后接收时长 Subfield #2
+  optional float trd = 2;
+
+  //070 最后接收时长 Subfield #3
+  optional float m3a = 3;
+
+  //090 最后接收时长 Subfield #4
+  optional float qi = 4;
+
+  //110 最后接收时长 Subfield #5
+  optional float ti = 5;
+
+  //132 最后接收时长 Subfield #6
+  optional float mam = 6;
+
+  //140 最后接收时长 Subfield #7
+  optional float gh = 7;
+
+  //145 最后接收时长 Subfield #8
+  optional float fl = 8;
+
+  //146 最后接收时长 Subfield #9
+  optional float isa = 9;
+
+  //148 最后接收时长 Subfield #10
+  optional float fsa = 10;
+
+  //150 最后接收时长 Subfield #11
+  optional float as = 11;
+
+  //151 最后接收时长 Subfield #12
+  optional float tas = 12;
+
+  //152 最后接收时长 Subfield #13
+  optional float mh = 13;
+
+  //155 最后接收时长 Subfield #14
+  optional float bvr = 14;
+
+  //157 最后接收时长 Subfield #15
+  optional float gvr = 15;
+
+  //160 最后接收时长 Subfield #16
+  optional float gv = 16;
+
+  //165 最后接收时长 Subfield #17
+  optional float tar = 17;
+
+  //170 最后接收时长 Subfield #18
+  optional float tid = 18;
+
+  //200 最后接收时长 Subfield #19
+  optional float ts = 19;
+
+  //220 最后接收时长 Subfield #20
+  optional float met = 20;
+
+  //230 最后接收时长 Subfield #21
+  optional float roa = 21;
+
+  //260 最后接收时长 Subfield #22
+  optional float ara = 22;
+
+  //271 最后接收时长 Subfield #23
+  optional float scc = 23;
+}
+
+
+//cat021解码后的消息定义
+message Cat021Info
+{
+  //010(必须的字段) 数据源识别
+	optional DiDataSourceId 	 dataSourceIdentification = 1;
+
+	//040(必须的字段) 目标报告描述符
+	optional DiTargetReportDescriptor 		targetReportDescriptor = 2;
+
+	//161 跟踪ID
+	optional int32 		trackId = 3;
+
+	//015 服务标识
+	optional int32 		serviceIdentification = 4;
+
+	//071 所报告位置的星历基准时间,时间用int64为表示
+	optional int64 		timeOfApplicabilityForPosition = 5;
+
+	//130
+	optional DiPosition 		position = 6;
+
+	//131 在WGS-84坐标的高分辨率位置,比DiPosition精度高
+	optional DiHighResolutionPosition 		highResolutionPosition = 7;
+
+	//072 所报告向量的星历基准时间,时间用int64为表示
+	optional int64 		timeOfApplicabilityForVelocity = 8;
+
+	//150 计算空气速度(IAS:指示空速,Mach:马赫)（空气矢量元素） 代码转换成米/秒
+	optional float 	calculatedAirSpeed = 9;
+
+	//151 真实空速 1节＝1.852公里/小时=1852/3.6(米/秒)
+	optional DiTrueAirspeed 	trueAirspeed = 10;
+
+  //80 (必须的字段)发射器目标地址唯一表示一个发射器承载体
+	optional int32 	targetAddress = 11;
+
+  //073 地面站位置信息接收时间
+	optional int64 	timeOfMessageReceptionOfPosition = 12;
+
+	//074
+	optional int64 	timeOfMessageReceptionOfPositionHighPrecision = 13;
+
+	//075 速度的消息接收时间
+  optional int64 timeOfMessageReceptionForVelocity = 14;
+
+  //076 信息接收的速度-精度高
+  optional int64 timeOfMessageReceptionOfVelocityHighPrecision = 15;
+
+  //140 几何高度
+  optional DiGeometricHeight 	geometricHeight = 16;
+
+  //090 (必须的字段)质量指标
+  optional DiQualityIndicators 	qualityIndicators = 17;
+
+  //210 MOPS Version
+  optional DiMopsVersion 	mopsVersion = 18;
+
+  //070 Mode 3/A Code in Octal Representation
+  optional int32 	mode3aCodeInOctalRepresentation = 19;
+
+  //230 滚转角,负值表示左翼翻滚
+  optional float 	rollAngle = 20;
+
+  //145 飞行高度
+  optional float 	flightLevel = 21;
+
+  //152 磁航向
+  optional float 	magneticHeading = 22;
+
+  //200 目标状态
+  optional DiTargetStatus 	targetStatus = 23;
+
+  //155 大气垂直速度
+  optional DiBarometricVerticalRate 	barometricVerticalRate = 24;
+
+  //157 几何垂直速度
+  optional DiGeometricVerticalRate 	geometricVerticalRate = 25;
+
+  //160 地面向量
+  optional DiGroundVector 	groundVector = 26;
+
+  //165 轨角速率
+  optional DiTrackAngleRate trackAngleRate = 27;
+
+  //077 报告传输时间
+  optional int64 timeOfReportTransmission = 28;
+
+  //170 目标标识,包含8个字符标识
+  optional int64 targetIdentification = 29;
+
+  //020 发射器载体类别 0:No ADS-B Emitter Category Information  1:light aircraft <= 15500 lbs
+  //2:15500 lbs < small aircraft <75000 lbs   3:75000 lbs < medium a/c < 300000 lbs
+  //4:High Vortex Large   5:300000 lbs <= heavy aircraft
+  //6:highly manoeuvrable (5g acceleration capability) and high speed (>400 knots cruise)
+  //7-9:reserved   10:rotocraft  11:glider/sailplane   12:lighter-than-air
+  //13:unmanned aerial vehicle  14:space/transatmospheric vehicle
+  //15:ultralight/handglider/paraglider    16:parachutist/skydiver
+  //17-19:reserved    20:surface emergency vehicle    21:surface service vehicle
+  //22:fixed ground or tethered obstruction    23:cluster obstacle    24:line obstacle
+  optional int32 emitterCategory = 30;
+
+  //220 气象信息
+  optional DiMetInformation metInformation = 31;
+
+  //146 中间状态选择高度
+  optional DiIntermediateStateSelectedAltitude intermediateStateSelectedAltitude = 32;
+
+  //148 最终状态选择高度
+  optional DiFinalStateSelectedAltitude finalStateSelectedAltitude = 33;
+
+  //110 轨迹意图
+  optional DiTrajectoryIntent trajectoryIntent = 34;
+
+  //016 服务管理 发射器上报信息的周期
+  optional DiServiceManagement serviceManagement = 35;
+
+  //008 飞机运行状态
+  optional DiAircraftOperationalStatus aircraftOperationalStatus = 36;
+
+  //271 表面性能和特性
+  optional DiSurfaceCapabilitiesAndCharacteristics surfaceCapabilitiesAndCharacteristics = 37;
+
+  //132 消息幅度,毫分贝,信号强弱
+  optional int32 messageAmplitude = 38;
+
+  //250 (必须的字段) Mode S MB 数据,BDS消息
+  optional DiModeSmbData modeSmbData = 39;
+
+  //260 扫描分辨率的咨询报告,在DiAircraftOperationalStatus.tcsResolutionAdvisoryActive = true 就是必须字段
+  optional int64 acasResolutionAdvisoryReport = 40;
+
+  //400 接收机标识-地面基站
+  optional int32 receiverId = 41;
+
+  //295 数据有效时长-针对各个字段的有效时长
+  optional DiDataAges dataAges = 42;
+}
+

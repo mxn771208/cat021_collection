@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:redis="http://www.springframework.org/schema/redis"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/redis
+            http://www.springframework.org/schema/redis/spring-redis-1.0.xsd"
+       default-lazy-init="false">
+
+    <!-- Redis configuration 属性文件的引入在 collction 模块中applicationContext.xml定义-->
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.maxTotal}" />
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <property name="maxWaitMillis" value="${redis.maxWait}" />
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+    </bean>
+
+    <!--<bean id="redisConnectionFactory" scope="prototype" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">-->
+    <bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis.host}"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="poolConfig" ref="poolConfig"/>
+
+    </bean>
+
+    <bean id="protocbufRedisSerializer" class="com.pekall.fms.redis.serializer.ProtocbufRedisSerializer">
+        <constructor-arg name="type" value="com.pekall.fms.collection.cat021.Cat021Proto.Cat021Info" />
+    </bean>
+
+    <bean id="redisTemplate" scope="prototype" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="redisConnectionFactory"></property>
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+        </property>
+        <property name="hashKeySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+        </property>
+        <!--<property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
+        </property>-->
+
+        <property name="valueSerializer" ref="protocbufRedisSerializer" />
+        <property name="hashValueSerializer" ref="protocbufRedisSerializer" />
+    </bean>
+
+    <bean id="redisClient" scope="prototype" class="com.pekall.fms.redis.dao.RedisClient">
+        <property name="redisTemplate" ref="redisTemplate" />
+    </bean>
+</beans>
